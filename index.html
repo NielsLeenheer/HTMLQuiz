@@ -1,22 +1,534 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css">
+        <title>#HTMLQuiz</title>
+        <meta name="viewport" content="initial-scale=1">
+
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css">
+        <link href="https://cloud.typenetwork.com/projects/40/fontface.css/" rel="stylesheet" type="text/css">
         <link href="css/style.css" rel="stylesheet" media="screen" type="text/css">
-        <title></title>
+
+        <style>
+        <!--
+            /* Temporary workaround until TypeNetwork gets SSL support working again, only for internal use! */
+
+            @font-face {
+                font-family: "Input Sans Ex Lt";
+                font-weight: Normal;
+                font-style: Normal;
+                src: url("fonts/InputSans-ExtraLight.woff") format("woff");
+
+            }
+
+        -->
+        </style>
     </head>
     <body>
         <div class="container-fluid">
+            <a href="https://html5test.com"><img src="https://html5te.st/assets/html5test-white.svg" width="130" alt="HTML5TEST"></a>
+            <h1>
+                html parser quiz
+            </h1>
             <div id="quiz"></div>
+
+            <p class='about'>
+                I created this quiz for the <a href='http://cssday.nl'>CSS Day</a> conference where I did a
+                talk about &lt;noscript>. Halfway through I discovered <a href='https://twitter.com/hashtag/htmlquiz?f=tweets&vertical=default&src=hash'>#HTMLQuiz</a> on Twitter by
+                <a href='https://twitter.com/RReverser'>Ingvar Stepanyan</a> and <a href='https://twitter.com/zcorpan'>Simon Pieters</a>.
+                Of course, being the lazy bastard that I am, I immediately
+                <del>shamelessly stole all of their ideas</del> used it for inspiration.
+                And thanks to Simon Pieters for checking all of these questions! Have fun and tweet the results (no cheating)!
+            </p>
         </div>
 
-            <script src="js/jquery.js" type="text/javascript"></script>
-            <script src="js/tabletop.js" type="text/javascript"></script>
-            <script src="js/script.js" type="text/javascript"></script>
-            
-            <script type="text/javascript">
-                var quiz = jQuery('#quiz').quiz('0Arenb9rAosmbdG5GWHFXbWJlN1hTR2ZmN3lZMVZkOHc'); //your published spreadsheet key or URL goes here
-            </script>
+        <script src="js/jquery.js"></script>
+        <script src="js/tabletop.js"></script>
+        <script src="js/script.js"></script>
 
+        <script type="text/javascript">
+        <!--
+
+            var questions = [
+                {
+                    question: {
+                        title: "In modern browsers, what is the output of",
+                        text: "<code>document.createElement('image').tagName</code>",
+                        explaination: "The tagName attribute is always the uppercase version of the name we specify when we create an element. It does not matter if that element is actually defined in the HTML specification."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "IMAGE",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "image",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "Something else",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What style is the number 3",
+                        text: "<code>&lt;b> 1 &lt;i> 2 &lt;/b> 3 &lt;/i></code>",
+                        explaination: "The closing B tag effectively closes both the B and the I element. That means the text node containing the value '3' will be not have any styling. But the tree builder also maintains a list of active formatting elements. And the I element is still on that list. So instead it creates a new parent I element and adds the text node as a child. So the text '3' is italic."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Bold Italic",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "Italic",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "Regular",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What is the output of",
+                        text: "<code>d = document.createElement('div');<br>d.innerHTML = '&lt;image>';<br>d.firstChild.tagName</code>",
+                        explaination: "Because we are using innerHTML instead of direct manipulation of the DOM, the browser uses the tokenizer and tree builder to create our element. And the tokenizer has a special exception. It will interpret &lt;image&gt; tags as normal &lt;img&gt; tags. Just because people tend to mix those up. According to the specification, studies showed that around 0.2% of pages used the &lt;image> tag. So the output would be \"IMG\"."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "IMAGE",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "image",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "Something else",
+                            correct: true,
+                        }
+
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Is this allowed?",
+                        text: "<code>&lt;!-- -- --&gt;</code>",
+                        explaination: "Double dashes in comments are not allowed. This is a parse error. The underlying reason was to match the behaviour of old versions of Firefox. And I say 'was', because this is going to <a href='https://github.com/whatwg/html/pull/1356' target='_blank'>change soon</a>."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Yes",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "No",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Which elements will be descendants of the body?",
+                        text: "<code>&lt;body>&lt;/br>&lt;/p></code>",
+                        explaination: "A &lt;/br> tag, as a descendant of the body will be interpreted as a regular &lt;br> tag. Something similar happens with the &lt;/p> tag, which as a descendant of the body is interpreted as &lt;p>&lt;/p>."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Empty",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "P",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "BR, P",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "BR",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What order will the numbers appear?",
+                        text: "<code>&lt;table>&lt;tr>&lt;td> 1 &lt;/td>&lt;/tr> 2 &lt;/table></code>",
+                        explaination: "The number 2 is not inside of a table cell. Any text and non-table related elements that are not in a table cell are inserted before the table. So in the end, the browser will first render the number 2 and then the table with a single cell containing the number 1."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "1 2",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "2 1",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What will be the class of the body?",
+                        text: "<code>&lt;body class='a' class='b'></code>",
+                        explaination: "The class of the body will be 'a'. It's simple. Once an attribute with a particular name is known, any other attributes with that same name will be ignored by the tokenizer."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "a",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "b",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "a and b",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What will be the color of the text 'Hello'?",
+                        text: "<code>&lt;body>Hello&lt;/body>&lt;body style='color: green'></code>",
+                        explaination: "Within a single document there can only be one BODY element. But the second &lt;body> tag is considered important, so any attributes on the second &lt;body> tag will be merged with the already existing BODY element."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Default color",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "Green",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Is this allowed?",
+                        text: "<code>&lt;div>&lt;/div class='foobar'></code>",
+                        explaination: "No, this is not allowed. This is a parse error. The browser will however continue as if nothing has happened. The class of the DIV element will not be set. The attribute in the closing tag is ignored."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Yes",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "No",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Is this allowed?",
+                        text: "<code>&lt;çústøm-èlémënt>&lt;/çústøm-èlémënt></code>",
+                        explaination: "No, this is not allowed. Tag names should start with a letter from a to z. Other unicode code points are not allowed as the first letter. The other letters are not a problem. "
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Yes",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "No",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What attributes will this DIV element have?",
+                        text: "<code>&lt;div / &lt;>&lt;/div></code>",
+                        explaination: "The / is in itself not a parsing error, but it is also not an attribute name. The / will switch the tokenizer to the self-closing start tag state. And the space that follows it, is a parsing error. The &lt; is a parse error too, but in this case the tokenizer handles the error by creating an attribute."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "None",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "&lt;",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "/ and &lt;",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Is this allowed?",
+                        text: "<code>&lt;uʍop-ǝpısdn>&lt;/uʍop-ǝpısdn></code>",
+                        explaination: "Yes, this is allowed. Tag names should start with a letter from a to z. And this tag name starts with the letter u (an upside-down n). All of the other letters are perfectly acceptible unicode codepoints for the remainder of the tag name."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Yes",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "No",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What attributes will this DIV element have?",
+                        text: "<code>&lt;div ===>&lt;/div></code>",
+                        explaination: "The first = is a parsing error. But the tokenizer handles this error by accepting it as an attribute name. The second = switches the tokenizer from the attribute name state to the before attribute value state. The third = is again a parse error which is resolved by setting it as the value of the attribute."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "None",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "'==='",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "'=' with value '='",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "How will this be interpreted?",
+                        text: "<code>&amp;ampersant; &amp;AMP &amp;Amp;</code>",
+                        explaination: "The first entity does not match any of the allowed entities. But the first 4 characters '&amp;amp' do. So those characters are used and render as a &amp;, the remaining characters including the semi-colon are treated as regular characters. The second entity '&amp;AMP' is a match, despite not having the closing semi-colon. In case of &amp;amp; both an uppercase and lowercase version and both with and without semicolon are in the list of recognized entities. And the final entity 'Amp;' does not match anything. So it is treated as just regular characters."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "&amp;ampersant; &amp; &amp;",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "&amp;ersant; &amp; &amp;Amp;",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "&amp;ampersant; &amp;AMP &amp;",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "&amp; &amp; &amp;",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Which is NOT a valid entity?",
+                        text: "<code>&amp;Backslash; &amp;NonBreakingSpace; &amp;VerticalLine; &amp;QuestionMark;</code>",
+                        explaination: "Only the &amp;Questionmark; is not on the list of known entities and will render as just text. The others are simply valid HTML5 entities. &amp;Backslash; = '&Backslash;', &amp;NonBreakingSpace; = &amp;nbsp; and &amp;VerticalLine; = '&VerticalLine;'."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "&amp;Backslash;",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "&amp;NonBreakingSpace;",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "&amp;VerticalLine;",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "&amp;QuestionMark;",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "All of them are not valid",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What kind of DOM node is this CDATA section and what is its value?",
+                        text: "<code>&lt;body>&lt;![CDATA[ foobar ]]></code>",
+                        explaination: "In HTML mode the parser does not understand the concept of CDATA sections, which are defined by XML and used by XHTML. But the parser will treat any tag that starts with &lt; and ! as a comment until it sees a &gt; (unless it's a doctype or real comment of course). Everything between the &lt;! and &gt; will be the value of the comment. There is an exception though. If you use CDATA inside inline SVG or MathML, the parser will create CDataSection nodes."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Text: foobar",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "CDataSection: foobar",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "Comment: foobar",
+                            correct: false,
+                        },
+
+
+                        {
+                            answer: "Comment: [CDATA[ foobar ]]",
+                            correct: true,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What is the value of?",
+                        text: "<code>document.body.namespaceURI</code>",
+                        explaination: "HTML in itself does not understand namespaces. But the tree builder will assign a default namespace to every DOM element it creates. In case of the BODY element, this is the XHTML namespace. Why the XHTML namespace? For backwards-compatibility reasons of course!"
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Empty",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "http://www.w3.org/1999/xhtml",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "http://www.w3.org/2014/html5",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "What is the document title?",
+                        text: "<code>&lt;body>&lt;p>&lt;title> foobar &lt;/p>&lt;/title></code>",
+                        explaination: "HTML will treat &lt;title> tags in the &lt;body> the same as in the &lt;head>. And it will treat any characters it encounters as the value of the title until it sees the closing title tag. So the title actually includes the &lt;/p>."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "foobar &lt;/p>",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "foobar",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "Empty",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "Where will this text field be submitted?",
+                        text: "<code>&lt;form><br>&lt;form action='other.html'><br>&lt;input type='text'>&lt;input type='submit'></code>",
+                        explaination: "Forms cannot be nested. The second &lt;form> tag is completely ignored, it will not be inserted into the DOM. So the text field will be submitted to the default action of the first &lt;form> tag and only FORM element: the current document."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "Current document",
+                            correct: true,
+                        },
+
+                        {
+                            answer: "other.html",
+                            correct: false,
+                        }
+                    ]
+                },
+
+                {
+                    question: {
+                        title: "How many B elements will the DOM contain?",
+                        text: "<code>&lt;p>&lt;b><br>&lt;p>&lt;b><br>&lt;p>&lt;b><br>&lt;p>&lt;b></code>",
+                        explaination: "The correct answer is 10. Every paragraph contains a &lt;b> tag of its own and these will be inserted into the DOM. <br><br>But the &lt;b> tags are never closed, so they are still active formatting elements when the tree builder sees the new &lt;p> tag and closes the current paragraph. Active formatting elements will be reopened after closing the paragraph. However in this case, the paragraph is also not closed, so the extra B element will be created as a child of next paragraph.<br><br>So the first paragraph contains one B element. The second paragraph contains the reopened one from the first and one of its own. So this paragraphs adds these two B elements to the list of active formatting elements. That means the third paragraph will have two B elements automatically reopened and it will one of its own. And so on.<br><br>So the first paragraph has just 1, the second 1 + 1 = 2, the third 2 + 1 = 3 and the final one as 3 + 1 = 4. In total this is 1 + 2 + 3 + 4 = 10 different B elements in the DOM."
+                    },
+                    possible_answers: [
+                        {
+                            answer: "4",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "8",
+                            correct: false,
+                        },
+
+                        {
+                            answer: "10",
+                            correct: true,
+                        }
+                    ]
+                }
+            ];
+
+            var quiz = jQuery('#quiz').quiz(questions);
+
+        //-->
+        </script>
+
+        <noscript>
+            To run this quiz you really need JavaScript. Sorry about that. And see how useful this &lt;noscript> tag actually is. No empty pages here!
+        </noscript>
     </body>
 </html>

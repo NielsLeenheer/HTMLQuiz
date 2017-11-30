@@ -3,8 +3,8 @@
 
     function score (nCorrect, nQuestions) {
         var answersWord = nCorrect === 1 ? 'answer' : 'answers';
-        return 'You got <span class="correct-answers">' + nCorrect + '</span> ' +
-               'correct ' + answersWord + ' out of ' + nQuestions + ' questions';
+        return 'You got <span class="correct-answers">' + nCorrect + '</span>&nbsp;' +
+               'correct&nbsp;' + answersWord + ' out of ' + nQuestions + '&nbsp;questions';
     }
 
     function scores(nQuestions) {
@@ -30,7 +30,7 @@
             not_finished_html : undefined,
             cheating : false,
             possible_display_elements  : [
-                { 
+                {
                     name : 'backgroundimage',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -43,9 +43,9 @@
                             slide[this.name] +
                             '\'); height: 100%; width: 100%;position:absolute;z-index: -1"></div>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'topimage',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -54,11 +54,11 @@
                         if (!slide[this.name]) {return '';}
                         return $(
                                 '<img src="' + slide[this.name]  +
-                                '" class="img-responsive' + this.name + '"></img>' 
+                                '" class="img-responsive' + this.name + '"></img>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'topvideoembed',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -72,9 +72,9 @@
                             slide.topvideoembedaspectratio + '%">' +
                             slide[this.name] + '</div>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'title',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -82,11 +82,11 @@
                     create_element : function(slide) {
                         if (!slide[this.name]) {return '';}
                         return $('<h3 class="' + this.name + '">' +
-                            slide[this.name] + '</h3>' 
+                            slide[this.name] + '</h3>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'middleimage',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -95,11 +95,11 @@
                         if (!slide[this.name]) {return '';}
                         return $(
                                 '<img src="' + slide[this.name] +
-                                '" class="img-responsive ' + this.name + '"></img>' 
+                                '" class="img-responsive ' + this.name + '"></img>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'middlevideoembed',
                     needs_aspect_ratio : true,
                     finder: function(container) {
@@ -113,9 +113,9 @@
                             slide.middlevideoembedaspectratio + '%">' +
                             slide[this.name] + '</div>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'subhed',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -128,9 +128,9 @@
                             slide[this.name] +
                             '</h2>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'text',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -143,9 +143,24 @@
                             slide[this.name] +
                             '</p>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
+                    name : 'explaination',
+                    finder: function(container) {
+                        return container.find('.' + this.name);
+                    },
+                    create_element : function(slide) {
+                        if (!slide[this.name]) {return '';}
+                        return $('<p class="' +
+                            this.name +
+                            '">' +
+                            slide[this.name] +
+                            '</p>'
+                        );
+                    }
+                },
+                {
                     name : 'bottomimage',
                     finder: function(container) {
                         return container.find('.' + this.name);
@@ -153,11 +168,11 @@
                     create_element : function(slide) {
                         if (!slide[this.name]) {return '';}
                         return $('<img src="' + slide[this.name] +
-                            '" class="img-responsive ' + this.name + '"></img>' 
+                            '" class="img-responsive ' + this.name + '"></img>'
                         );
-                    } 
+                    }
                 },
-                { 
+                {
                     name : 'bottomvideoembed',
                     needs_aspect_ratio : true,
                     finder: function(container) {
@@ -171,7 +186,7 @@
                             slide.bottomvideoembedaspectratio + '%">' +
                             slide[this.name] + '</div>'
                         );
-                    } 
+                    }
                 }
             ],
 
@@ -218,7 +233,7 @@
             },
 
             load_from_google_spreadsheet: function(spreadsheet_id) {
-                Tabletop.init({ 
+                Tabletop.init({
                     proxy: this.proxy ? this.proxy : undefined,
                     key: spreadsheet_id,
                     prettyColumnNames: false,
@@ -257,24 +272,24 @@
                     return '';
                 }
                 height = parseInt(height[0].replace(/height="/, '').replace(/"/, ''), 10);
-                                
+
                 var width = videoembed.match(/width="\d+"/);
                 if (!width || !width[0]) {
                     console.log('Your video embed code needs a width.');
                     return '';
                 }
                 width = parseInt(width[0].replace(/width="/, '').replace(/"/, ''), 10);
-            
+
                 return (height / width)*100;
             },
             pull_answer_value_from_spreadsheet : function(row, value, wrong_number, correct) {
                 correct = correct ? 'right' : 'wrong';
                 if (row[correct + wrong_number + value] && row[correct + wrong_number + value] !== self.defaulting_flag) {
-                    return (row[correct + wrong_number + value]);                    
+                    return (row[correct + wrong_number + value]);
                 }
-                
+
                 if ((self.defaulting_behavior_on && row[correct + wrong_number + value] !== self.defaulting_flag) ||
-                    (!self.defaulting_behavior_on && row[correct + wrong_number + value] === self.defaulting_flag) 
+                    (!self.defaulting_behavior_on && row[correct + wrong_number + value] === self.defaulting_flag)
                 ) {
                     return (row[correct + value] && row[correct + value] !== self.defaulting_flag ?
                                    row[correct + value] :
@@ -410,8 +425,13 @@
                 var answers_container = $('<ul class="list-unstyled possible_answers possible_answers_' +
                     question_index + '"></ul>');
 
+                var answered = false;
+
                 function bindClick(question_index, answer_index, possible_answer) {
                     possible_answer.bind('click', function() {
+                        if (answered) return;
+                        answered = true;
+
                         // was it the right answer?
                         var was_correct = self.quiz_data[question_index].possible_answers[answer_index].correct;
 
@@ -421,7 +441,7 @@
                         $(this).removeClass('possible_answer');
                         answers_container
                             .find('.answer_' + answer_index)
-                            .addClass( 
+                            .addClass(
                                 was_correct ? 'correct-answer' : 'wrong-answer'
                             );
 
@@ -438,7 +458,7 @@
 
                         //show new slide
                         self.display_answer(self.quiz_data[question_index], question_index, self.quiz_data[question_index].possible_answers[answer_index]);
-                        
+
                         // track that this was selected last
                         self.quiz_data[question_index].previously_selected = self.quiz_data[question_index].possible_answers[answer_index];
                     });
@@ -447,7 +467,7 @@
                 for (var i = 0; i < question.possible_answers.length; i++) {
                     var answer_data = question.possible_answers[i];
                     var possible_answer = $('<li><p class="bg-warning possible_answer answer_' +
-                        i +
+                        i + ' ' + (answer_data.correct ? 'correct' : 'wrong') +
                         '">' +
                         answer_data.answer +
                         '</p></li>');
@@ -464,7 +484,7 @@
                         return;
                     }
                 }
-                container.prepend( 
+                container.prepend(
                     self.possible_display_elements[place_in_display_elements].create_element(slide)
                 );
             },
@@ -473,11 +493,37 @@
                     question.previously_selected :
                     question.question;
                 var slide = container_elem.find('.question_' + question_index + ' .question');
+
                 slide.addClass('revealed_answer');
+                slide.addClass(answer.correct ? 'correct_answer' : 'wrong_answer');
+
+                var explaination = slide.find('.explaination');
+
+                explaination.css({ position: 'absolute' });
+                var height = explaination.height();
+
+                explaination.css({ position: 'static', height: '0', transition: 'height 0.2s ease-out' });
+                explaination.show();
+
+                window.requestAnimationFrame(function() {
+                    explaination.height(height);
+
+                    window.setTimeout(function() {
+                        explaination.css({ transition: 'none' });
+                        explaination.css({ height: 'auto' });
+                    }, 400);
+                });
+
+                var display_elements = self.possible_display_elements
+
                 for (var i = 0; i < self.possible_display_elements.length; i++) {
                     var display_value = self.possible_display_elements[i].name;
-                    if ( answer[display_value] !== displayed_slide[display_value] ) {
-                        if ( !answer[display_value] ) {
+
+                    var value = displayed_slide[display_value];
+                    if (answer[display_value]) value = answer[display_value];
+
+                    if ( value !== displayed_slide[display_value] ) {
+                        if ( !value ) {
                             self.possible_display_elements[i].finder(slide).remove();
                         } else if ( !displayed_slide[display_value] ) {
                             self.add_display_in_correct_place(slide, i, answer);
@@ -498,24 +544,70 @@
                 container_elem.css('padding', '0px');
             },
             update_how_you_did_element: function() {
+                var answered = 0;
                 var right_answers = 0;
                 var user_answers = self.cheating ? cheater_answer_tracking : answer_tracking;
                 var unfinished = false;
                 for (var i = 0; i < self.quiz_data.length; i++) {
                     if (typeof(answer_tracking[i]) === 'undefined') {
                         unfinished = true;
+                    } else {
+                        answered++;
                     }
+
                     if (user_answers[i]) {
                         right_answers++;
                     }
                 }
-                var html;
-                if (unfinished && typeof(this.not_finished_html) !== 'undefined') {
-                    html = this.not_finished_html;
-                } else {
-                    html = this.results_data[right_answers];
+                var html = '';
+
+                if (!unfinished) {
+                    if (right_answers / self.quiz_data.length > 0.8) {
+                        html += 'Congratulations! ';
+                        how_you_did_element.addClass('congratulations');
+                    }
+                    else if (right_answers / self.quiz_data.length > 0.5) {
+                        html += 'Okay! ';
+                        how_you_did_element.addClass('okay');
+                    }
+                    else {
+                        html += 'Ughh! ';
+                        how_you_did_element.addClass('ughh');
+                    }
                 }
+
+                if (unfinished && typeof(this.not_finished_html) !== 'undefined') {
+                    html += this.not_finished_html;
+                } else {
+                    html += this.results_data[right_answers];
+                }
+
+                if (unfinished) {
+                    var answers_to_go = self.quiz_data.length - answered;
+                    if (answers_to_go > 0 && answers_to_go <= 5) {
+                        html += ', ' + answers_to_go + ' to go!';
+                    }
+                }
+
+                if (!unfinished) {
+                    html += " &nbsp; <a href='https://twitter.com/share' class='twitter-share-button' " +
+                                "data-url='https://html5te.st/quiz' " +
+                                "data-related='html5test' " +
+                                "data-text='I got " + right_answers + " out of " + self.quiz_data.length + " questions correct! #htmlquiz #cssday #html5test' " +
+                                "data-lang='en' "+
+                                "data-count='vertical'"+
+                                "data-size='large'"+
+                                ">Tweet</a>";
+                }
+
                 how_you_did_element.html(html);
+
+
+                if (!unfinished) {
+                    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))
+                    {js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}
+                    (document,"script","twitter-wjs");
+                }
             }
         };
         return quiz.init(quiz_data, results_data, options);
